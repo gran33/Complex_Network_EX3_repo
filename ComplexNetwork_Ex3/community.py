@@ -9,6 +9,7 @@ from copy import deepcopy
 from sssp import SSSP
 import sssp
 from pprint import pprint
+from compiler.ast import Compare
 """A basic module for detecting community structure in graphs."""
 
 from graph import Graph
@@ -45,6 +46,15 @@ Splits the graph into a set of communities.
         unDirectG = deepcopy(unDirectG)
         community_vertices = set()
         
+        if k <=0:
+            return [unDirectG.getVertices()]
+        
+        if k > len(unDirectG.getEdges()):
+            ans = []
+            for ver in unDirectG.getVertices():
+                ans.append([ver])
+            return ans
+        
         for i in range(0,k):
 
             bweenS = EdgeBetweenness(unDirectG)
@@ -70,9 +80,18 @@ Splits the graph into a set of communities.
             for reachable_from_v in bfs_from_v._distances:
                 if bfs_from_v._distances[reachable_from_v] >= 0:
                     v_community.append(reachable_from_v)
-            ans.append(v_community)
                     
-        pprint(ans)
+            isExist = False
+            for elm in ans:
+                if elm == v_community:
+                    isExist = True
+                    break
+            if isExist == False:
+                ans.append(v_community)
+        
+                
+                
+                    
         return ans
             
         

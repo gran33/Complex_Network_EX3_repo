@@ -66,14 +66,20 @@ def main():
    # g.addEdge(5,2)
   #  g.addEdge(3,5)
 #    g.addEdge(5,3)
-    b = EdgeBetweenness(g)
-    b.run()
+    #b = EdgeBetweenness(g)
+    #b.run()
     
     #print b.getTheBiggestBC_Edges()
 
     comm = GirvanNewman(g)
     #print max(20, math.ceil(math.log(len(comm._G.getVertices()), 2)))
-    comm.getCommunities(max(20, math.ceil(math.log(len(comm._G.getVertices()), 2))))
+    #toPrint = comm.getCommunities(max(20, math.ceil(math.log(len(comm._G.getVertices()), 2))))
+    toPrint = comm.getCommunities(0)
+    
+    for com in toPrint:
+        print com
+    
+    
     
     #newG = comm.directToUndirectGraph(g)
         
