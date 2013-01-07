@@ -65,15 +65,23 @@ class Graph():
         if weight is None:        
             weight = 0
 
-        if self.isEdge(v1, v2) is None:
-            self.addVertex(v1)
-            self.addVertex(v2)         
-            self._Gr[v1].append((v2,weight))
+        #if self.isEdge(v1, v2) is None:
+        self.addVertex(v1)
+        self.addVertex(v2)         
+        self._Gr[v1].append((v2,weight))
             
 
     def deleteEdge(self,e):
         assert isinstance(e,tuple)
-        self._Gr[e[0]].remove(self.getEdge(e[0], e[1]))
+        neighbors = self._Gr[e[0]]
+        for i in range(0,neighbors.__len__()):
+            if(neighbors[i][0] == e[1]):
+                del neighbors[i]
+                break
+            
+        
+       
+        #self._Gr[e[0]].remove(e[1], self.getEdgeWeight(e[0],e[1]))
 
     def getNumberOfVertices(self):
         """

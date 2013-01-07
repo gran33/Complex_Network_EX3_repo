@@ -5,6 +5,7 @@ Created on Jan 5, 2013
 '''
 #!/usr/bin/env python
 from __future__ import division
+import math
 import sys
 import random
 #from graphParser import *
@@ -16,13 +17,14 @@ from cc import UndirectedClusteringCoefficient
 from closeness import Closeness
 from graphParser import GraphParser
 from betweenness import *
+from community import *
 
 
 
 
 def main():
-    #parser = GraphParser()        
-    #g = parser.loadGraphFromFile('football.net','TYPE_PAJEK')
+    parser = GraphParser()        
+    g = parser.loadGraphFromFile('football.net','TYPE_PAJEK')
 #    g = Graph()
 #    g.addEdge('1', '2', 1)
 #    g.addEdge('2', '3', 1)
@@ -40,105 +42,116 @@ def main():
 #    bwns = Betweenness(g)
 #
 #"""addVertex, addEdge, getNumberOfVertices, getNumberOfEdges"""
-    g=Graph()
+    #g=Graph()
     NumberOfVertices = g.getNumberOfVertices()    
     print "number of vertices: %d \n" % NumberOfVertices
     print "number of links: %d \n" % g.getNumberOfEdges()    
-    g.addVertex(2)
-    g.addVertex(1)
-    g.addVertex(4)
-    g.addVertex(3)
+#    g.addVertex(2)
+#    g.addVertex(1)
+#    g.addVertex(4)
+#    g.addVertex(3)
     # g.addVertex(5)
-    g.addEdge(1,2)
-    g.addEdge(2,1)
-    g.addEdge(1,3)
-    g.addEdge(3,1)
-    g.addEdge(2,3)
-    g.addEdge(3,2)
-    g.addEdge(3,4)
-    g.addEdge(4,3)    
+#    g.addEdge(1,2)
+#    g.addEdge(1,4)
+#    #g.addEdge(2,1)
+#   # g.addEdge(1,3)
+#    g.addEdge(3,1)
+#    g.addEdge(1,4)
+#    g.addEdge(4,5)
+#    g.addEdge(4,6)
+    #g.addEdge(4,3)    
     #Betweeness
-    g.addVertex(5)
-    g.addEdge(2,5)
-    g.addEdge(5,2)
-    g.addEdge(3,5)
-    g.addEdge(5,3)    
-    b = Betweenness(g)
+   # g.addVertex(5)
+  #  g.addEdge(2,5)
+   # g.addEdge(5,2)
+  #  g.addEdge(3,5)
+#    g.addEdge(5,3)
+    b = EdgeBetweenness(g)
     b.run()
-    print "Betweenness \n"    
-    print "b.getBetweenness(1) expected 0\n"
-    print (b.getBetweenness(1))
-    print "b.getBetweenness(2) expected 1\n"
-    print (b.getBetweenness(2))
-    print "b.getBetweenness(3) expected 7\n"
-    print (b.getBetweenness(3))
-    print "b.getBetweenness(4) expected 0\n"
-    print (b.getBetweenness(4))
-    print "b.getBetweenness(5) expected 0\n"
-    print (b.getBetweenness(5))
     
-    #EdgeBetweeness
-    eb = EdgeBetweenness(g)
-    eb.run()
-    print "Edge Betweenness \n"    
-    print "eb.getBetweenness(3,4) expected 4\n"
-    print (eb.getBetweenness(3,4))
-    print "eb.getBetweenness(4,3) expected 4\n"
-    print (eb.getBetweenness(4,3))
+    #print b.getTheBiggestBC_Edges()
 
-    print "eb.getBetweenness(5,3) expected 2.5\n"
-    print (eb.getBetweenness(5,3))
-    print "eb.getBetweenness(3,5) expected 2.5\n"
-    print (eb.getBetweenness(3,5))
+    comm = GirvanNewman(g)
+    #print max(20, math.ceil(math.log(len(comm._G.getVertices()), 2)))
+    comm.getCommunities(max(20, math.ceil(math.log(len(comm._G.getVertices()), 2))))
+    
+    #newG = comm.directToUndirectGraph(g)
+        
 
-    print "eb.getBetweenness(5,2) expected 1.5\n"
-    print (eb.getBetweenness(5,2))
-    print "eb.getBetweenness(2,5) expected 1.5\n"
-    print (eb.getBetweenness(2,5))
-
-    print "eb.getBetweenness(2,3) expected 2\n"
-    print (eb.getBetweenness(2,3))
-    print "eb.getBetweenness(3,2) expected 2\n"
-    print (eb.getBetweenness(3,2))
-
-    print "eb.getBetweenness(1,3) expected 2.5\n"
-    print (eb.getBetweenness(1,3))
-    print "eb.getBetweenness(3,1) expected 2.5\n"
-    print (eb.getBetweenness(3,1))
-
-    print "eb.getBetweenness(1,2) expected 1.5\n"
-    print (eb.getBetweenness(1,2))
-    print "eb.getBetweenness(2,1) expected 1.5\n"   
-    print (eb.getBetweenness(2,1))
-
-    #GroupBetweeness
-    gb = GroupBetweenness(g)
-    M = set()
-    M.add(3)
-    gb.run(M)
-    print "Group Betweenness \n"
-    print "M=[3] expected: "
-    print (b.getBetweenness(3))
-    print (gb.getGroupBetweenness())
-    print "M=[2,3] expected 8: "
-    M.add(2)
-    gb.run(M);
-    print (gb.getGroupBetweenness())
-    print "M=[1,5] expected 0: "
-    M=set()
-    M.add(1)
-    M.add(5)
-    gb.run(M);    
-    print (gb.getGroupBetweenness())
-    print "M=[1,5,4] expected 0: "    
-    M.add(4)
-    gb.run(M);    
-    print (gb.getGroupBetweenness())
-    print "M=[1,5,3] expected "
-    print (b.getBetweenness(3))    
-    M.add(3)
-    gb.run(M);    
-    print (gb.getGroupBetweenness())
+#    print "Betweenness \n"    
+#    print "b.getBetweenness(1) expected 0\n"
+#    print (b.getBetweenness(1))
+#    print "b.getBetweenness(2) expected 1\n"
+#    print (b.getBetweenness(2))
+#    print "b.getBetweenness(3) expected 7\n"
+#    print (b.getBetweenness(3))
+#    print "b.getBetweenness(4) expected 0\n"
+#    print (b.getBetweenness(4))
+#    print "b.getBetweenness(5) expected 0\n"
+#    print (b.getBetweenness(5))
+#    
+#    #EdgeBetweeness
+#    eb = EdgeBetweenness(g)
+#    eb.run()
+#    print "Edge Betweenness \n"    
+#    print "eb.getBetweenness(3,4) expected 4\n"
+#    print (eb.getBetweenness(3,4))
+#    print "eb.getBetweenness(4,3) expected 4\n"
+#    print (eb.getBetweenness(4,3))
+#
+#    print "eb.getBetweenness(5,3) expected 2.5\n"
+#    print (eb.getBetweenness(5,3))
+#    print "eb.getBetweenness(3,5) expected 2.5\n"
+#    print (eb.getBetweenness(3,5))
+#
+#    print "eb.getBetweenness(5,2) expected 1.5\n"
+#    print (eb.getBetweenness(5,2))
+#    print "eb.getBetweenness(2,5) expected 1.5\n"
+#    print (eb.getBetweenness(2,5))
+#
+#    print "eb.getBetweenness(2,3) expected 2\n"
+#    print (eb.getBetweenness(2,3))
+#    print "eb.getBetweenness(3,2) expected 2\n"
+#    print (eb.getBetweenness(3,2))
+#
+#    print "eb.getBetweenness(1,3) expected 2.5\n"
+#    print (eb.getBetweenness(1,3))
+#    print "eb.getBetweenness(3,1) expected 2.5\n"
+#    print (eb.getBetweenness(3,1))
+#
+#    print "eb.getBetweenness(1,2) expected 1.5\n"
+#    print (eb.getBetweenness(1,2))
+#    print "eb.getBetweenness(2,1) expected 1.5\n"   
+#    print (eb.getBetweenness(2,1))
+#
+#    #GroupBetweeness
+#    gb = GroupBetweenness(g)
+#    M = set()
+#    M.add(3)
+#    gb.run(M)
+#    print "Group Betweenness \n"
+#    print "M=[3] expected: "
+#    print (b.getBetweenness(3))
+#    print (gb.getGroupBetweenness())
+#    print "M=[2,3] expected 8: "
+#    M.add(2)
+#    gb.run(M);
+#    print (gb.getGroupBetweenness())
+#    print "M=[1,5] expected 0: "
+#    M=set()
+#    M.add(1)
+#    M.add(5)
+#    gb.run(M);    
+#    print (gb.getGroupBetweenness())
+#    print "M=[1,5,4] expected 0: "    
+#    M.add(4)
+#    gb.run(M);    
+#    print (gb.getGroupBetweenness())
+#    print "M=[1,5,3] expected "
+#    print (b.getBetweenness(3))    
+#    M.add(3)
+#    gb.run(M);    
+#    print (gb.getGroupBetweenness())
    
    # print bwns.getBetweenness('a')
     

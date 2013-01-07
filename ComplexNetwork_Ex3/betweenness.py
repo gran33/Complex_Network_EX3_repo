@@ -222,11 +222,26 @@ Computes the group betweenness centrality of all vertices.
             w = stack.pop()
             for v in Pred[w]:
                 c = (sigma[v]/sigma[w])*(1+delta[w])
-                
-                self._BC_Edges[(v,w)] += c
+                if (v,w) in self._BC_Edges: 
+                    self._BC_Edges[(v,w)] += c
                 delta[v] += c
             if w != s:
                 self._BC[w] += delta[w]
+                
+                
+    def getTheBiggestBC_Edges(self):
+        ans_BC_amount = 0        
+        ans_Edge = None
+        
+        for e in self._BC_Edges:
+            if self._BC_Edges[e] > ans_BC_amount:
+                ans_BC_amount = self._BC_Edges[e]
+                ans_Edge = e
+                
+        return ans_Edge
+            
+            
+             
 
 
 
